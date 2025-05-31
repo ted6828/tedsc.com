@@ -1,20 +1,19 @@
 # tedsc.com
 
-A basic social website. Inspired by [Ghostty](https://ghostty.org/).
+A basic social website. Inspired by [Ghostty](https://ghostty.org/)'s homepage.
+
 Mouse hover and card effect inspired by [this codepen](https://codepen.io/Hyperplexed/pen/MWQeYLW).
 
 ## Tech Stack
 
 - Next.js 15
-- React 19
-- TypeScript
 - Tailwind CSS
 
 ## Features
 
-- ASCII animations from text files
-- Background music player
-- Responsive design
+- animated ASCII text
+- simple music player with random song selection
+- responsive design
 
 ## Getting Started
 
