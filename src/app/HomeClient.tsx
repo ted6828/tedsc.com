@@ -5,7 +5,7 @@ import AsciiAnimation from './components/AsciiAnimation';
 import MusicPlayer from './components/MusicPlayer';
 import { useDynamicFlickerAnimation } from './components/RandomFlickerController';
 import { useEffect, useState } from 'react';
-import { getRandomMusicFile } from '../lib/loadMusicFiles';
+import { getRandomMusicFile, loadMusicFilesClient } from '../lib/loadMusicFilesClient';
 
 interface HomeClientProps {
   animationFrames: string[];
@@ -30,11 +30,16 @@ export default function HomeClient({ animationFrames }: HomeClientProps) {
 
   useEffect(() => {
     // random music file on page load
-    const file = getRandomMusicFile([
-      { file: '/music/suzume.mp3', weight: 0.3 },
-      { file: '/music/wheresyourheadat.mp3', weight: 0.4 }
-    ]);
-    setMusicFile(file);
+    const loadMusic = async () => {
+      const musicFiles = await loadMusicFilesClient();
+      const file = getRandomMusicFile(musicFiles, [
+        { file: '/music/suzume.mp3', weight: 0.3 },
+        { file: '/music/wheresyourheadat.mp3', weight: 0.4 }
+      ]);
+      setMusicFile(file);
+    };
+    
+    loadMusic();
 
     // page title to hostname
     if (typeof window !== 'undefined') {
