@@ -64,6 +64,11 @@ export default function MusicPlayer({ musicFile }: MusicPlayerProps) {
         ref={audioRef}
         onEnded={() => setIsPlaying(false)}
         preload="none"
+        onLoadedMetadata={() => {
+          if (audioRef.current) {
+            audioRef.current.volume = volume;
+          }
+        }}
       />
       
       {/* Play/Pause Button */}
