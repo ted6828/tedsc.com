@@ -4,11 +4,12 @@ import Button from './components/Button';
 import AsciiAnimation from './components/AsciiAnimation';
 import MusicPlayer from './components/MusicPlayer';
 import { useDynamicFlickerAnimation } from './components/RandomFlickerController';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { getRandomMusicFile } from '../lib/loadMusicFiles';
 
 interface HomeClientProps {
   animationFrames: string[];
-  musicFile: string | null;
+//  musicFile: string | null;
 }
 
 const elements = [
@@ -23,10 +24,19 @@ const elements = [
   { id: 'ascii', type: 'normal' as const },
 ];
 
-export default function HomeClient({ animationFrames, musicFile }: HomeClientProps) {
+export default function HomeClient({ animationFrames }: HomeClientProps) {
   const { isVisible, titleVisible } = useDynamicFlickerAnimation(elements);
+    const [musicFile, setMusicFile] = useState<string | null>(null);
 
   useEffect(() => {
+    // random music file on page load
+    const file = getRandomMusicFile([
+      { file: '/music/suzume.mp3', weight: 0.3 },
+      { file: '/music/wheresyourheadat.mp3', weight: 0.4 }
+    ]);
+    setMusicFile(file);
+
+    // page title to hostname
     if (typeof window !== 'undefined') {
       document.title = window.location.hostname;
     }
