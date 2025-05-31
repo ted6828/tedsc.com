@@ -1,6 +1,7 @@
 # tedsc.com
 
 A basic social website. Inspired by [Ghostty](https://ghostty.org/).
+Mouse hover and card effect inspired by [this codepen](https://codepen.io/Hyperplexed/pen/MWQeYLW).
 
 ## Tech Stack
 

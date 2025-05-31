@@ -10,6 +10,7 @@ interface FlickerElement {
 export function useDynamicFlickerAnimation(elements: FlickerElement[]) {
   const [visibleElements, setVisibleElements] = useState<Set<string>>(new Set());
   const [titleVisible, setTitleVisible] = useState(false);
+  const [flickerCompleted, setFlickerCompleted] = useState(false);
 
   useEffect(() => {
     const timers: NodeJS.Timeout[] = [];
@@ -49,9 +50,10 @@ export function useDynamicFlickerAnimation(elements: FlickerElement[]) {
         setTitleVisible(false);
         const flickerBackTimer = setTimeout(() => {
           setTitleVisible(true);
-        }, 125);
+          setFlickerCompleted(true);
+        }, 133);
         timers.push(flickerBackTimer);
-      }, lastElementDelay + 1000); // flicker 1 second after last
+      }, lastElementDelay + 650); // flicker 650ms after last
       timers.push(flickerTimer);
     }
 
@@ -62,6 +64,7 @@ export function useDynamicFlickerAnimation(elements: FlickerElement[]) {
 
   return { 
     isVisible: (elementId: string) => visibleElements.has(elementId),
-    titleVisible 
+    titleVisible,
+    flickerCompleted
   };
 }

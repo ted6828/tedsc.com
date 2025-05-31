@@ -3,6 +3,8 @@
 import Button from './components/Button';
 import AsciiAnimation from './components/AsciiAnimation';
 import MusicPlayer from './components/MusicPlayer';
+import TitleWinker from './components/TitleWinker';
+import MouseGlowEffect from './components/MouseGlowEffect';
 import { useDynamicFlickerAnimation } from './components/RandomFlickerController';
 import { useEffect, useState } from 'react';
 import { getRandomMusicFile, loadMusicFilesClient } from '../lib/loadMusicFilesClient';
@@ -25,7 +27,7 @@ const elements = [
 ];
 
 export default function HomeClient({ animationFrames }: HomeClientProps) {
-  const { isVisible, titleVisible } = useDynamicFlickerAnimation(elements);
+  const { isVisible, titleVisible, flickerCompleted } = useDynamicFlickerAnimation(elements);
     const [musicFile, setMusicFile] = useState<string | null>(null);
 
   useEffect(() => {
@@ -34,7 +36,7 @@ export default function HomeClient({ animationFrames }: HomeClientProps) {
       const musicFiles = await loadMusicFilesClient();
       const file = getRandomMusicFile(musicFiles, [
         { file: '/music/suzume.mp3', weight: 0.3 },
-        { file: '/music/wheresyourheadat.mp3', weight: 0.4 }
+        { file: '/music/amomentapart.mp3', weight: 0.4 }
       ]);
       setMusicFile(file);
     };
@@ -49,7 +51,9 @@ export default function HomeClient({ animationFrames }: HomeClientProps) {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 md:p-8" style={{ background: 'var(--background)', overflow: 'hidden' }}>
-      <div 
+      <MouseGlowEffect 
+        glowColor="234, 234, 235" // --blue-9 rgb value
+        borderGlowSize={2}
         className="relative flex flex-col w-full max-w-4xl terminal-container"
         style={{
           minWidth: '320px',
@@ -88,15 +92,10 @@ export default function HomeClient({ animationFrames }: HomeClientProps) {
           {/* Main Title */}
           <div style={{ marginBottom: '8px', height: '50px' }}>
             {isVisible('title') && (
-              <div
-                className="text-4xl sm:text-5xl lg:text-5xl"
-                style={{
-                  color: 'var(--gray-9)',
-                  visibility: titleVisible ? 'visible' : 'hidden'
-                }}
-              >
-                hi im ted :)
-              </div>
+              <TitleWinker 
+                titleVisible={titleVisible}
+                flickerCompleted={flickerCompleted}
+              />
             )}
           </div>
 
@@ -180,14 +179,13 @@ export default function HomeClient({ animationFrames }: HomeClientProps) {
             style={{
               width: '100%',
               height: '100%',
-              //overflow: 'hidden',
               pointerEvents: 'none'
             }}
           >
             <AsciiAnimation frames={animationFrames} />
           </div>
         )}
-      </div>
+      </MouseGlowEffect>
     </div>
   );
 }
