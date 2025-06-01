@@ -91,8 +91,6 @@ export default function HomeClient({ animationFrames }: HomeClientProps) {
     <Terminal
       musicFile={musicFile}
       animationFrames={animationFrames}
-      showMusic={isVisible('music')}
-      showAscii={isVisible('ascii')}
       showHomeButton={currentPage !== 'home' && !isTransitioning}
       onNavigateHome={() => navigateToPage('home')}
       isVisible={isVisible('terminal')}
