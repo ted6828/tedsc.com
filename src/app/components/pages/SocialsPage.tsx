@@ -2,6 +2,7 @@
 
 import Button from '../Button';
 import TitleWinker from '../TitleWinker';
+import DiscordStatus from '../DiscordStatus';
 
 interface SocialsPageProps {
   isVisible: (elementId: string) => boolean;
@@ -43,11 +44,11 @@ export default function SocialsPage({
             display: isVisible('email') ? 'inline-block' : 'none'
           }}
         >
-          reach me at <a href="mailto:me@tedsc.com" className="text-blue-500 hover:underline">me@tedsc.com</a>
+          reach me at <a href="mailto:me@tedsc.com" className="text-blue-500 hover:underline">me@tedsc.com</a> or:
         </span>
       </div>
-      
-      {/* First Row of Buttons */}
+
+      {/* First Row - Discord */}
       <div 
         className="flex flex-wrap gap-3 md:gap-5"
         style={{
@@ -60,27 +61,37 @@ export default function SocialsPage({
             display: isVisible('button1') ? 'block' : 'none'
           }}
         >
-          <Button href="https://visualizer.eggsy.xyz/383660259992010753" variant="secondary">
-            discord
-          </Button>
+          <DiscordStatus 
+            userId="383660259992010753"
+            onClick={() => window.open('https://discord.com/users/383660259992010753', '_blank', 'noopener,noreferrer')}
+          />
         </div>
-
+      </div>
+      
+      {/* Second Row of Buttons */}
+      <div 
+        className="flex flex-wrap gap-3 md:gap-5"
+        style={{
+          zIndex: 10,
+        }}
+      >
         <div
           style={{
             display: isVisible('button2') ? 'block' : 'none'
           }}
         >
-          <Button href="https://github.com/ted6828" variant="secondary">
-            github
+          <Button href="https://robertsspaceindustries.com/en/citizens/Tedulous" variant="secondary">
+            star citizen
           </Button>
         </div>
-      </div>
 
-      {/* Second Row of Buttons */}
+      </div>
+      {/* Third Row of Buttons */}
       <div 
         className="flex flex-wrap gap-3 md:gap-5"
         style={{
-          zIndex: 10
+          zIndex: 10,
+          marginTop: '12px'
         }}
       >
         <div
@@ -88,8 +99,8 @@ export default function SocialsPage({
             display: isVisible('button3') ? 'block' : 'none'
           }}
         >
-          <Button href="https://robertsspaceindustries.com/en/citizens/Tedulous" variant="secondary">
-            star citizen
+          <Button href="https://github.com/ted6828" variant="secondary">
+            github
           </Button>
         </div>
       </div>

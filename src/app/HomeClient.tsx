@@ -33,8 +33,8 @@ export default function HomeClient({ animationFrames }: HomeClientProps) {
     triggerFlickerOut(() => {
       setCurrentPage(page);
       setTimeout(() => {
-        triggerFlickerIn();
-      }, 100);
+        triggerFlickerIn(page);
+      }, 50);
     });
   };
 
