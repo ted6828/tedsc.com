@@ -45,7 +45,8 @@ export default function Terminal({
         style={{
           minWidth: '320px',
           width: 'min(90vw, 600px)',
-          height: 'min(80vh, calc((30 * 16px) + (2 * 7px) + 36px + 12px))',
+          minHeight: 'min(80vh, calc((30 * 16px) + (2 * 7px) + 36px + 12px))',
+          maxHeight: '90vh',
           background: 'var(--gray-0)',
           border: '1px solid var(--gray-3)',
           borderRadius: '10px',
@@ -54,28 +55,29 @@ export default function Terminal({
         }}
       >
         <style>{`
-          @media (min-width: 799px) {
+          @media (min-width: 800px) {
             .terminal-container {
               width: min(90vw, calc((100 * 8px) + (2 * 7px) + 2px)) !important;
             }
           }
-          @media (min-width: 800px) {
-            .ascii-animation {
-              display: block !important;
+          @media (max-width: 799px), (max-height: 619px) {
+            .terminal-container .ascii-animation {
+              display: none !important;
             }
           }
-          @media (max-width: 799px) {
-            .ascii-animation {
-              display: none !important;
+          @media (min-width: 800px) and (min-height: 620px) {
+            .terminal-container .ascii-animation {
+              display: block !important;
             }
           }
         `}</style>
         
         {/* Page Content */}
         <div 
-          className="absolute top-6 left-6 font-mono"
+          className="relative flex-1 font-mono overflow-y-auto"
           style={{ 
-            fontFamily: 'var(--font-geist-mono), monospace'
+            fontFamily: 'var(--font-geist-mono), monospace',
+            padding: '24px 24px 80px 24px' // 80px bottom padding for music player space
           }}
         >
           {children}

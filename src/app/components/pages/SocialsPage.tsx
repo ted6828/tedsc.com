@@ -7,13 +7,11 @@ import DiscordStatus from '../DiscordStatus';
 interface SocialsPageProps {
   isVisible: (elementId: string) => boolean;
   titleVisible: boolean;
-  flickerCompleted: boolean;
 }
 
 export default function SocialsPage({ 
   isVisible, 
-  titleVisible, 
-  flickerCompleted
+  titleVisible
 }: SocialsPageProps) {
   return (
     <>
@@ -22,7 +20,6 @@ export default function SocialsPage({
         {isVisible('title') && (
           <TitleWinker 
             titleVisible={titleVisible}
-            flickerCompleted={flickerCompleted}
             titleText="ted - socials"
             shouldWink={false}
           />
