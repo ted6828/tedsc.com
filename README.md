@@ -11,9 +11,10 @@ Mouse hover and card effect inspired by [this codepen](https://codepen.io/Hyperp
 
 ## Features
 
-- animated ASCII text
+- neat flicker in/out animations
+- animated ASCII text ( blob )
 - simple music player with random song selection
-- responsive design
+- cool up to date discord profile viewer
 
 ## Getting Started
 
