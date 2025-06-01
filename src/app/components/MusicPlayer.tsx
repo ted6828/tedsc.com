@@ -48,10 +48,6 @@ export default function MusicPlayer({ musicFile }: MusicPlayerProps) {
     setVolume(newVolume);
   };
 
-  if (!musicFile) {
-    return null; // Hide player if no music file
-  }
-
   return (
     <div 
       className="flex items-center gap-5"
@@ -60,65 +56,71 @@ export default function MusicPlayer({ musicFile }: MusicPlayerProps) {
         zIndex: 10
       }}
     >
-      <audio 
-        ref={audioRef}
-        onEnded={() => setIsPlaying(false)}
-        preload="none"
-        onLoadedMetadata={() => {
-          if (audioRef.current) {
-            audioRef.current.volume = volume;
-          }
-        }}
-      />
+      {musicFile && (
+        <audio 
+          ref={audioRef}
+          onEnded={() => setIsPlaying(false)}
+          preload="none"
+          onLoadedMetadata={() => {
+            if (audioRef.current) {
+              audioRef.current.volume = volume;
+            }
+          }}
+        />
+      )}
       
       {/* Play/Pause Button */}
       <button
         onClick={togglePlayPause}
+        disabled={!musicFile}
         style={{
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          border: '1px solid var(--accent-blue)',
+          border: `1px solid ${musicFile ? 'var(--accent-blue)' : 'var(--gray-4)'}`,
           borderRadius: '6px',
           transition: 'background-color 0.15s',
           fontSize: '16px',
           padding: '11px 18px',
           background: 'transparent',
-          color: 'var(--gray-9)',
+          color: musicFile ? 'var(--gray-9)' : 'var(--gray-5)',
           fontFamily: 'var(--font-geist-mono), monospace',
-          cursor: 'pointer',
+          cursor: musicFile ? 'pointer' : 'not-allowed',
           height: '44px',
           boxSizing: 'border-box',
-          width: '50px'
+          width: '50px',
+          opacity: musicFile ? 1 : 0.6
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = 'var(--accent-blue)';
+          if (musicFile) {
+            e.currentTarget.style.backgroundColor = 'var(--accent-blue)';
+          }
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.backgroundColor = 'transparent';
         }}
       >
-        {isPlaying ? '⏸' : '▶'}
+        {!musicFile ? '⊘' : (isPlaying ? '⏸' : '▶')}
       </button>
 
       {/* Volume Slider */}
       <div 
         className="flex items-center gap-2"
         style={{
-          border: '1px solid var(--accent-blue)',
+          border: `1px solid ${musicFile ? 'var(--accent-blue)' : 'var(--gray-4)'}`,
           borderRadius: '6px',
           padding: '11px 18px',
           background: 'transparent',
           height: '44px',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          opacity: musicFile ? 1 : 0.6
         }}
       >
         <span 
           style={{ 
-            color: 'var(--gray-5)', 
+            color: musicFile ? 'var(--gray-5)' : 'var(--gray-4)', 
             fontSize: '14px',
             minWidth: '20px',
-            //marginLeft: '-8px',
           }}
         >
           🔊
@@ -130,13 +132,14 @@ export default function MusicPlayer({ musicFile }: MusicPlayerProps) {
           step="0.01"
           value={volume}
           onChange={handleVolumeChange}
+          disabled={!musicFile}
           style={{
             width: '80px',
             height: '4px',
-            background: 'var(--gray-3)',
+            background: musicFile ? 'var(--gray-3)' : 'var(--gray-2)',
             borderRadius: '2px',
             outline: 'none',
-            cursor: 'pointer'
+            cursor: musicFile ? 'pointer' : 'not-allowed'
           }}
           className="volume-slider"
         />

@@ -11,7 +11,7 @@ export function usePageTransition(currentPage: string, hasHomeButton = false) {
   const [visibleElements, setVisibleElements] = useState<Set<string>>(new Set());
   const [titleVisible, setTitleVisible] = useState(false);
   const [flickerCompleted, setFlickerCompleted] = useState(false);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [isInitialLoad] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Define elements based on current page
@@ -27,9 +27,9 @@ export function usePageTransition(currentPage: string, hasHomeButton = false) {
         { id: 'email', type: 'normal' },
         { id: 'button1', type: 'normal' },
         { id: 'button2', type: 'normal' },
-        { id: 'button3', type: 'normal' },
-        { id: 'music', type: 'normal' },
-        { id: 'ascii', type: 'normal' }
+        { id: 'button3', type: 'normal' }
+        // { id: 'music', type: 'normal' },
+        // { id: 'ascii', type: 'normal' }
       );
     } else if (currentPage === 'socials') {
       baseElements.push(
@@ -37,9 +37,9 @@ export function usePageTransition(currentPage: string, hasHomeButton = false) {
         { id: 'email', type: 'normal' },
         { id: 'button1', type: 'normal' },
         { id: 'button2', type: 'normal' },
-        { id: 'button3', type: 'normal' },
-        { id: 'music', type: 'normal' },
-        { id: 'ascii', type: 'normal' }
+        { id: 'button3', type: 'normal' }
+        // { id: 'music', type: 'normal' },
+        // { id: 'ascii', type: 'normal' }
       );
     } else if (currentPage === 'whoami') {
       baseElements.push(
@@ -48,9 +48,9 @@ export function usePageTransition(currentPage: string, hasHomeButton = false) {
         { id: 'content2', type: 'normal' },
         { id: 'content3', type: 'normal' },
         { id: 'content4', type: 'normal' },
-        { id: 'content5', type: 'normal' },
-        { id: 'music', type: 'normal' },
-        { id: 'ascii', type: 'normal' }
+        { id: 'content5', type: 'normal' }
+        // { id: 'music', type: 'normal' },
+        // { id: 'ascii', type: 'normal' }
       );
     }
     
@@ -65,13 +65,30 @@ export function usePageTransition(currentPage: string, hasHomeButton = false) {
   useEffect(() => {
     if (!isInitialLoad || isTransitioning) return;
     
+    // Immediately show persistent elements
+    setVisibleElements(prev => {
+      const newSet = new Set(prev);
+      newSet.add('terminal');
+      newSet.add('music');
+      newSet.add('ascii');
+      return newSet;
+    });
+    
     const timers: NodeJS.Timeout[] = [];
     const baseDelay = 75;
-    const getRandomJitter = () => Math.random() * 100 + 50;
     
-    // Use original simple approach - animate all elements by their array index
+    // Only animate content elements, not persistent ones
     elements.forEach((element, index) => {
-      const delay = baseDelay * (index + 1) + getRandomJitter() + 400;
+      // Skip persistent elements since they're already visible
+      if (['terminal', 'music', 'ascii'].includes(element.id)) {
+        return;
+      }
+
+      let delay = baseDelay * (index + 1);
+      // for all elements except terminal add 100ms delay
+      if (index > 0) {
+        delay += 100;
+      }
 
       const timer = setTimeout(() => {
         setVisibleElements(prev => new Set([...prev, element.id]));
@@ -84,22 +101,22 @@ export function usePageTransition(currentPage: string, hasHomeButton = false) {
       timers.push(timer);
     });
 
-    // Title double flicker - only on initial load
-    const titleElement = elements.find(el => el.type === 'title');
-    if (titleElement) {
-      const lastElementDelay = baseDelay * elements.length + getRandomJitter();
+    // // Title double flicker - only on initial load
+    // const titleElement = elements.find(el => el.type === 'title');
+    // if (titleElement) {
+    //   const lastElementDelay = baseDelay * elements.length + getRandomJitter();
       
-      const flickerTimer = setTimeout(() => {
-        setTitleVisible(false);
-        const flickerBackTimer = setTimeout(() => {
-          setTitleVisible(true);
-          setFlickerCompleted(true);
-          setIsInitialLoad(false);
-        }, 133);
-        timers.push(flickerBackTimer);
-      }, lastElementDelay + 650);
-      timers.push(flickerTimer);
-    }
+    //   const flickerTimer = setTimeout(() => {
+    //     setTitleVisible(false);
+    //     const flickerBackTimer = setTimeout(() => {
+    //       setTitleVisible(true);
+    //       setFlickerCompleted(true);
+    //       setIsInitialLoad(false);
+    //     }, 133);
+    //     timers.push(flickerBackTimer);
+    //   }, lastElementDelay + 650);
+    //   timers.push(flickerTimer);
+    // }
 
     return () => {
       timers.forEach(timer => clearTimeout(timer));
@@ -137,14 +154,13 @@ export function usePageTransition(currentPage: string, hasHomeButton = false) {
   };
   
   const triggerFlickerIn = (targetPage?: string) => {
-    // Keep persistent elements visible
+    // Keep persistent elements visible - ensure music and ascii stay visible
     setVisibleElements(prev => {
-      const persistentElements = new Set<string>();
-      prev.forEach(elementId => {
-        if (['terminal', 'music', 'ascii'].includes(elementId)) {
-          persistentElements.add(elementId);
-        }
-      });
+      const persistentElements = new Set(prev);
+      // Always ensure these elements are visible during transitions
+      persistentElements.add('terminal');
+      persistentElements.add('music');
+      persistentElements.add('ascii');
       return persistentElements;
     });
     setTitleVisible(false);
@@ -201,7 +217,7 @@ export function usePageTransition(currentPage: string, hasHomeButton = false) {
     );
     
     const timers: NodeJS.Timeout[] = [];
-    const baseDelay = 50;
+    const baseDelay = 40;
     
     contentElements.forEach((element, index) => {
       const delay = baseDelay * (index + 1);
@@ -217,16 +233,14 @@ export function usePageTransition(currentPage: string, hasHomeButton = false) {
       timers.push(timer);
     });
 
-    // No double flicker on transitions
-    const titleElement = contentElements.find(el => el.type === 'title');
-    if (titleElement) {
-      const lastElementDelay = baseDelay * contentElements.length;
-      const completedTimer = setTimeout(() => {
-        setFlickerCompleted(true);
-        setIsTransitioning(false);
-      }, lastElementDelay + 200);
-      timers.push(completedTimer);
-    }
+
+    // after all elements are visible, mark flicker as completed
+    const lastElementDelay = baseDelay * contentElements.length + 100;
+    const flickerCompletedTimer = setTimeout(() => {
+      setFlickerCompleted(true);
+      setIsTransitioning(false);
+    }, lastElementDelay);
+    timers.push(flickerCompletedTimer);
   };
 
   return {

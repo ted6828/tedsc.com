@@ -20,7 +20,7 @@ export default function MouseGlowEffect({
 }: MouseGlowEffectProps) {
   const borderGlowColor = '195, 195, 196'; // --gray-6 rgb value
   const containerRef = useRef<HTMLDivElement>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
   const [isHovered, setIsHovered] = useState(false);
   const [showBorderGlow, setShowBorderGlow] = useState(false);
 
@@ -82,6 +82,20 @@ export default function MouseGlowEffect({
       } as React.CSSProperties}
     >
       <style jsx>{`
+        .mouse-glow-card {
+          contain: layout style;
+        }
+        
+        .mouse-glow-card::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          pointer-events: none;
+        }
+        
         .mouse-glow-card::before,
         .mouse-glow-card::after {
           border-radius: inherit;
@@ -93,6 +107,8 @@ export default function MouseGlowEffect({
           top: 0px;
           width: 100%;
           pointer-events: none;
+          will-change: opacity;
+          transform: translateZ(0);
         }
         
         .mouse-glow-card::before {
@@ -129,10 +145,14 @@ export default function MouseGlowEffect({
           background-color: var(--gray-0);
           border-radius: inherit;
           inset: ${borderGlowSize}px;
-          position: absolute;
+          position: absolute !important;
           z-index: 2;
           display: flex;
           flex-direction: column;
+          top: ${borderGlowSize}px;
+          left: ${borderGlowSize}px;
+          right: ${borderGlowSize}px;
+          bottom: ${borderGlowSize}px;
         }
       `}</style>
       

@@ -6,14 +6,14 @@ import TitleWinker from '../TitleWinker';
 interface HomePageProps {
   isVisible: (elementId: string) => boolean;
   titleVisible: boolean;
-  flickerCompleted: boolean;
+  //flickerCompleted: boolean;
   onNavigate: (page: 'socials' | 'whoami') => void;
 }
 
 export default function HomePage({ 
   isVisible, 
   titleVisible, 
-  flickerCompleted, 
+  //flickerCompleted, 
   onNavigate 
 }: HomePageProps) {
   return (
@@ -23,7 +23,7 @@ export default function HomePage({
         {isVisible('title') && (
           <TitleWinker 
             titleVisible={titleVisible}
-            flickerCompleted={flickerCompleted}
+            //flickerCompleted={flickerCompleted}
             titleText="hi im ted :)"
             shouldWink={true}
           />

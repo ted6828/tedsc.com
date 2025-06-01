@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 import MouseGlowEffect from '../MouseGlowEffect';
 import MusicPlayer from '../MusicPlayer';
 import AsciiAnimation from '../AsciiAnimation';
@@ -10,8 +10,8 @@ interface TerminalProps {
   children: ReactNode;
   musicFile: string | null;
   animationFrames: string[];
-  showMusic: boolean;
-  showAscii: boolean;
+  //showMusic: boolean;
+  //showAscii: boolean;
   showHomeButton?: boolean;
   onNavigateHome?: () => void;
   isVisible: boolean;
@@ -21,12 +21,21 @@ export default function Terminal({
   children, 
   musicFile, 
   animationFrames, 
-  showMusic, 
-  showAscii,
+  //showMusic, 
+  //showAscii,
   showHomeButton = false,
   onNavigateHome,
-  isVisible
+  //isVisible
 }: TerminalProps) {
+  const [layoutStable, setLayoutStable] = useState(false);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLayoutStable(true);
+    }, 50); // Wait 50ms for MouseGlowEffect to settle
+    
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <div className="min-h-screen flex items-center justify-center p-4 md:p-8" style={{ background: 'var(--background)', overflow: 'hidden' }}>
       <MouseGlowEffect 
@@ -41,7 +50,7 @@ export default function Terminal({
           border: '1px solid var(--gray-3)',
           borderRadius: '10px',
           padding: '7px',
-          display: isVisible ? 'flex' : 'none'
+          display: true ? 'flex' : 'none' // botched fix as i decided i dont want the terminal to flicker in
         }}
       >
         <style>{`
@@ -73,7 +82,7 @@ export default function Terminal({
         </div>
         
         {/* Music Player */}
-        {showMusic && (
+        {layoutStable && (
           <div 
             className="absolute"
             style={{
@@ -107,7 +116,8 @@ export default function Terminal({
               variant="secondary"
               style={{
                 padding: '8px 12px',
-                minWidth: 'auto'
+                minWidth: 'auto',
+                marginBottom: '4px'
               }}
             >
               <svg
@@ -128,7 +138,7 @@ export default function Terminal({
         )}
 
         {/* ASCII Animation */}
-        {showAscii && (
+        {layoutStable && (
           <div 
             className="absolute bottom-4 right-4 ascii-animation"
             style={{

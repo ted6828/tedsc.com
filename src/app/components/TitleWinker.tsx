@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 
 interface TitleWinkerProps {
   titleVisible: boolean;
-  flickerCompleted: boolean;
+  //flickerCompleted: boolean;
   titleText: string;
   shouldWink?: boolean;
   winkDelay?: number;
@@ -13,7 +13,7 @@ interface TitleWinkerProps {
 
 export default function TitleWinker({ 
   titleVisible, 
-  flickerCompleted, 
+  //flickerCompleted, 
   titleText,
   shouldWink = false,
   winkDelay = 1000,
@@ -28,7 +28,7 @@ export default function TitleWinker({
   }, [titleText, shouldWink]);
 
   useEffect(() => {
-    if (!flickerCompleted || !canWink) return;
+    if (!canWink) return;
 
     const winkTimer = setTimeout(() => {
       setDisplayText('hi im ted ;D');
@@ -40,7 +40,7 @@ export default function TitleWinker({
     }, winkDelay);
 
     return () => clearTimeout(winkTimer);
-  }, [flickerCompleted, canWink, winkDelay, winkDuration]);
+  }, [canWink, winkDelay, winkDuration]);
 
   return (
     <div

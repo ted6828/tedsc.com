@@ -26,7 +26,7 @@
 body {
   background: var(--gray-0);
   color: var(--gray-9);
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-geist-mono), SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 /* Volume slider styling */
