@@ -6,13 +6,13 @@ import TitleWinker from '../TitleWinker';
 interface WhoamiPageProps {
   isVisible: (elementId: string) => boolean;
   titleVisible: boolean;
-  flickerCompleted: boolean;
+  //flickerCompleted: boolean;
 }
 
 export default function WhoamiPage({ 
   isVisible, 
   titleVisible, 
-  flickerCompleted
+  //flickerCompleted
 }: WhoamiPageProps) {
   return (
     <>
@@ -21,7 +21,7 @@ export default function WhoamiPage({
         {isVisible('title') && (
           <TitleWinker 
             titleVisible={titleVisible}
-            flickerCompleted={flickerCompleted}
+            //flickerCompleted={flickerCompleted}
             titleText="ted - whoami"
             shouldWink={false}
           />
