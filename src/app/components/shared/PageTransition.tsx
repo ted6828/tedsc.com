@@ -1,33 +1,50 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 interface FlickerElement {
   id: string;
   type: 'normal' | 'title';
 }
 
-export function useDynamicFlickerAnimation(elements: FlickerElement[], isTransitioning = false) {
+export function usePageTransition(currentPage: string, hasHomeButton = false) {
   const [visibleElements, setVisibleElements] = useState<Set<string>>(new Set());
   const [titleVisible, setTitleVisible] = useState(false);
   const [flickerCompleted, setFlickerCompleted] = useState(false);
- // const [setFlickerOutCallback] = useState<(() => void) | null>(null);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
+  // Define elements based on current page
+  const elements = useMemo(() => {
+    const baseElements: FlickerElement[] = [
+      { id: 'terminal', type: 'normal' },
+      { id: 'title', type: 'title' },
+      { id: 'subtitle', type: 'normal' },
+      { id: 'email', type: 'normal' },
+      { id: 'button1', type: 'normal' },
+      { id: 'button2', type: 'normal' },
+      { id: 'button3', type: 'normal' },
+      { id: 'music', type: 'normal' },
+      { id: 'ascii', type: 'normal' },
+    ];
+    
+    if (hasHomeButton) {
+      baseElements.push({ id: 'homeButton', type: 'normal' });
+    }
+    
+    return baseElements;
+  }, [hasHomeButton]);
+
+  // Initial page load animation
   useEffect(() => {
-    // Only run initial animation if not transitioning
     if (isTransitioning) return;
     
     const timers: NodeJS.Timeout[] = [];
-    
-    // flicker on load effect
     const baseDelay = 100;
-    const getRandomJitter = () => Math.random() * 100 + 50; // 50-150ms jitter
+    const getRandomJitter = () => Math.random() * 100 + 50;
     
-    // Create timers for each element
     elements.forEach((element, index) => {
-      let delay = baseDelay * (index + 1) + getRandomJitter() + 400; // when deployed its too quick!
-      // if element is ascii animation, add an extra 50ms to the delay
+      let delay = baseDelay * (index + 1) + getRandomJitter() + 400;
       if (element.id === 'ascii') {
         delay += 50;
       }
@@ -35,7 +52,6 @@ export function useDynamicFlickerAnimation(elements: FlickerElement[], isTransit
       const timer = setTimeout(() => {
         setVisibleElements(prev => new Set([...prev, element.id]));
         
-        // title secondary flicker
         if (element.type === 'title') {
           setTitleVisible(true);
         }
@@ -44,25 +60,22 @@ export function useDynamicFlickerAnimation(elements: FlickerElement[], isTransit
       timers.push(timer);
     });
 
-    // Find the title element to handle flickering - only on initial load
+    // Title double flicker - only on initial load
     const titleElement = elements.find(el => el.type === 'title');
     if (titleElement && isInitialLoad) {
-      //const titleIndex = elements.indexOf(titleElement);
       const lastElementDelay = baseDelay * elements.length + getRandomJitter();
       
-      // Simple one-time flicker after everything has loaded - only on initial load
       const flickerTimer = setTimeout(() => {
         setTitleVisible(false);
         const flickerBackTimer = setTimeout(() => {
           setTitleVisible(true);
           setFlickerCompleted(true);
-          setIsInitialLoad(false); // Mark that initial load is done
+          setIsInitialLoad(false);
         }, 133);
         timers.push(flickerBackTimer);
-      }, lastElementDelay + 650); // flicker 650ms after last
+      }, lastElementDelay + 650);
       timers.push(flickerTimer);
     } else if (titleElement && !isInitialLoad) {
-      // For non-initial loads, just set completed without flickering
       const lastElementDelay = baseDelay * elements.length + getRandomJitter();
       const completedTimer = setTimeout(() => {
         setFlickerCompleted(true);
@@ -76,9 +89,9 @@ export function useDynamicFlickerAnimation(elements: FlickerElement[], isTransit
   }, [elements, isInitialLoad, isTransitioning]);
 
   const triggerFlickerOut = (callback: () => void) => {
-    //setFlickerOutCallback(() => callback);
+    setIsTransitioning(true);
     
-    // Only flicker out content elements, keep terminal, music, and ascii persistent
+    // Only flicker out content elements
     const flickerOrder = ['button3', 'button2', 'button1', 'email', 'subtitle', 'title'];
     const timers: NodeJS.Timeout[] = [];
     
@@ -100,16 +113,14 @@ export function useDynamicFlickerAnimation(elements: FlickerElement[], isTransit
       }
     });
     
-    // Call the callback after all elements are hidden
     const callbackTimer = setTimeout(() => {
       callback();
-      //setFlickerOutCallback(null);
     }, flickerOrder.length * 100 + 100);
     timers.push(callbackTimer);
   };
   
   const triggerFlickerIn = () => {
-    // Keep persistent elements (terminal, music, ascii) visible, reset only content elements
+    // Keep persistent elements visible
     setVisibleElements(prev => {
       const persistentElements = new Set<string>();
       prev.forEach(elementId => {
@@ -122,7 +133,7 @@ export function useDynamicFlickerAnimation(elements: FlickerElement[], isTransit
     setTitleVisible(false);
     setFlickerCompleted(false);
     
-    // Only flicker in content elements, in order: title, subtitle, email, buttons, homeButton
+    // Only flicker in content elements
     const contentElements = elements.filter(el => 
       !['terminal', 'music', 'ascii'].includes(el.id)
     );
@@ -145,23 +156,24 @@ export function useDynamicFlickerAnimation(elements: FlickerElement[], isTransit
       timers.push(timer);
     });
 
-    // No double flicker on transitions, just set completed when title appears
+    // No double flicker on transitions
     const titleElement = contentElements.find(el => el.type === 'title');
     if (titleElement) {
       const lastElementDelay = baseDelay * contentElements.length + getRandomJitter();
-      
       const completedTimer = setTimeout(() => {
         setFlickerCompleted(true);
+        setIsTransitioning(false);
       }, lastElementDelay + 200);
       timers.push(completedTimer);
     }
   };
 
-  return { 
+  return {
     isVisible: (elementId: string) => visibleElements.has(elementId),
     titleVisible,
     flickerCompleted,
     triggerFlickerOut,
-    triggerFlickerIn
+    triggerFlickerIn,
+    isTransitioning
   };
 }

@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react';
 interface TitleWinkerProps {
   titleVisible: boolean;
   flickerCompleted: boolean;
+  titleText: string;
+  shouldWink?: boolean;
   winkDelay?: number;
   winkDuration?: number;
 }
@@ -12,25 +14,33 @@ interface TitleWinkerProps {
 export default function TitleWinker({ 
   titleVisible, 
   flickerCompleted, 
+  titleText,
+  shouldWink = false,
   winkDelay = 1000,
   winkDuration = 250 
 }: TitleWinkerProps) {
-  const [titleText, setTitleText] = useState('hi im ted :)');
+  const [displayText, setDisplayText] = useState(titleText);
+  const [canWink, setCanWink] = useState(false);
 
   useEffect(() => {
-    if (!flickerCompleted) return;
+    setDisplayText(titleText);
+    setCanWink(shouldWink && titleText === 'hi im ted :)');
+  }, [titleText, shouldWink]);
+
+  useEffect(() => {
+    if (!flickerCompleted || !canWink) return;
 
     const winkTimer = setTimeout(() => {
-      setTitleText('hi im ted ;D');
+      setDisplayText('hi im ted ;D');
       const backTimer = setTimeout(() => {
-        setTitleText('hi im ted :)');
+        setDisplayText('hi im ted :)');
       }, winkDuration);
       
       return () => clearTimeout(backTimer);
     }, winkDelay);
 
     return () => clearTimeout(winkTimer);
-  }, [flickerCompleted, winkDelay, winkDuration]);
+  }, [flickerCompleted, canWink, winkDelay, winkDuration]);
 
   return (
     <div
@@ -40,7 +50,7 @@ export default function TitleWinker({
         visibility: titleVisible ? 'visible' : 'hidden'
       }}
     >
-      {titleText}
+      {displayText}
     </div>
   );
 }
