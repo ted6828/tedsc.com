@@ -87,13 +87,22 @@ export default function Terminal({
         
         {/* Home Button */}
         {showHomeButton && (
-          <div 
-            className="absolute top-6 right-6"
+          <div
+            className="absolute top-6 right-6 home-btn-pos"
             style={{
               zIndex: 20
             }}
           >
-            <Button 
+            <style>{`
+              @media (max-width: 500px) {
+                .terminal-container .home-btn-pos {
+                  top: auto !important;
+                  right: 16px !important;
+                  bottom: 16px !important;
+                }
+              }
+            `}</style>
+            <Button
               onClick={onNavigateHome}
               variant="secondary"
               style={{
@@ -101,14 +110,14 @@ export default function Terminal({
                 minWidth: 'auto'
               }}
             >
-              <svg 
-                width="16" 
-                height="16" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
                 strokeLinejoin="round"
               >
                 <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
