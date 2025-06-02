@@ -228,7 +228,7 @@ export default function DiscordStatus({ userId, onClick }: DiscordStatusProps) {
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
-              maxWidth: '140px'
+              maxWidth: '180px'
             }}>
               {activity.text}
             </div>
