@@ -4,6 +4,8 @@ A basic social website. Inspired by [Ghostty](https://ghostty.org/)'s homepage.
 
 Mouse hover and card effect inspired by [this codepen](https://codepen.io/Hyperplexed/pen/MWQeYLW).
 
+Discord presence & activities from [lanyard](https://github.com/Phineas/lanyard)
+
 ## Tech Stack
 
 - Next.js 15
@@ -14,7 +16,7 @@ Mouse hover and card effect inspired by [this codepen](https://codepen.io/Hyperp
 - neat flicker in/out animations
 - animated ASCII text ( blob )
 - simple music player with random song selection
-- cool up to date discord profile viewer
+- cool up to date discord profile presence
 
 ## Getting Started
 
