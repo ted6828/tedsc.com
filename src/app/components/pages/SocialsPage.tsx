@@ -16,7 +16,7 @@ export default function SocialsPage({
   return (
     <>
       {/* Main Title */}
-      <div style={{ marginBottom: '8px', height: '50px' }}>
+      <div style={{ marginBottom: '8px', height: '50px', marginRight: '-15px' }}> {/* easiest solution to stop it going to 2 lines when width is so little :sob: */}
         {isVisible('title') && (
           <TitleWinker 
             titleVisible={titleVisible}

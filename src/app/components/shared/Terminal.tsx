@@ -51,7 +51,8 @@ export default function Terminal({
           border: '1px solid var(--gray-3)',
           borderRadius: '10px',
           padding: '7px',
-          display: true ? 'flex' : 'none' // botched fix as i decided i dont want the terminal to flicker in
+          display: true ? 'flex' : 'none', // botched fix as i decided i dont want the terminal to flicker in
+          zIndex: 20,
         }}
       >
         <style>{`
@@ -81,6 +82,24 @@ export default function Terminal({
           }}
         >
           {children}
+          {/* Fade-out overlay at the bottom */}
+          <div
+            className="fade-bottom-overlay"
+            style={{
+              position: 'fixed',
+              marginLeft: '14px',
+              marginRight: '14px',
+              marginBottom: '0px',
+              left: 0,
+              right: 0,
+              bottom: 2,
+              height: '100px',
+              pointerEvents: 'none',
+              // Gradient fades to gray, then stays solid gray at the bottom
+              background: 'linear-gradient(to bottom, rgba(255,255,255,0) 0%, var(--gray-0) 30%, var(--gray-0) 100%)',
+              zIndex: 5
+            }}
+          />
         </div>
         
         {/* Music Player */}
@@ -89,7 +108,8 @@ export default function Terminal({
             className="absolute"
             style={{
               bottom: '20px',
-              left: '20px'
+              left: '20px',
+              zIndex: 20
             }}
           >
             <MusicPlayer musicFile={musicFile} />
@@ -146,7 +166,8 @@ export default function Terminal({
             style={{
               width: '100%',
               height: '100%',
-              pointerEvents: 'none'
+              pointerEvents: 'none',
+              zIndex: 20
             }}
           >
             <AsciiAnimation frames={animationFrames} />
